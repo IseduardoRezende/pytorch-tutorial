@@ -33,6 +33,22 @@ class ImageCaptioning:
                                     mean = [0.485, 0.456, 0.406],
                                     std = [0.229, 0.224, 0.225])])
 
+    def __decode_sequence(ix_to_word, seq) -> list[str]:
+        N, D = seq.shape
+        out = []
+        for i in range(N):
+            txt = ''
+            for j in range(D):
+                ix = seq[i,j]
+                if ix > 0 :
+                    if j >= 1:
+                        txt = txt + ' '
+                    txt = txt + ix_to_word[str(ix)]
+                else:
+                    break
+            out.append(txt)
+        return out
+
     def __extract_resNet_features(transform: transforms.Compose, img: Image.Image):              
         device = Utils.get_device()
         img_t = transform(img).unsqueeze(0).to(device)
@@ -54,7 +70,7 @@ class ImageCaptioning:
         
         return fc_feats.unsqueeze(0)  # formato [batch, feat_dim]
 
-    def predict(img: Image.ImageFile):
+    def predict(img: Image.ImageFile, beam_size: int = 3):
         
         if (not img):
             print("transform or img is None, (invalid inputs)")
@@ -67,10 +83,10 @@ class ImageCaptioning:
         fc_feats = ImageCaptioning.__extract_resNet_features(transform, img)
         att_feats = torch.zeros_like(fc_feats)  
         
-        seq, _ = model.sample(fc_feats, att_feats, opt={'beam_size': 5})
+        seq, _ = model.sample(fc_feats, att_feats, opt={'beam_size': beam_size})
         vocab = model_infos['vocab']
-        decoded = Utils.decode_sequence(vocab, seq.cpu().numpy())
-        print("Generated caption:", decoded[0])        
+        decoded = ImageCaptioning.__decode_sequence(vocab, seq.cpu().numpy())
+        print("Generated caption:", decoded[0])                
 
 
 class CaptionModel(nn.Module):

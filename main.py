@@ -1,4 +1,5 @@
 from utils import Utils
+from torch_hub import TorchHub
 from image_generation import ImageGeneration
 from image_captioning import ImageCaptioning
 from image_classification import ImageClassification
@@ -15,7 +16,9 @@ def run_image_generation():
 
 def run_image_captioning():
     image = Utils.get_image("imgs/adventure_life.png")
-    ImageCaptioning.predict(image)
+    ImageCaptioning.predict(image, beam_size=3)
+
+_ = Utils.get_model_from_hub(TorchHub("pytorch/vision:main", "resnet18"))
 
 # run_image_classification()
 # run_image_generation()

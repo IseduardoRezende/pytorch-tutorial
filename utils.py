@@ -2,6 +2,7 @@ import six
 import torch
 from PIL import Image
 from torchvision import models
+from torch_hub import TorchHub
 
 class Utils:
     def setup_test():
@@ -41,23 +42,7 @@ class Utils:
         assert model_keys == netG_keys, "model data keys and model keys are different."
 
     def get_device() -> str:
-        return 'cuda' if torch.cuda.is_available() else 'cpu'
-    
-    def decode_sequence(ix_to_word, seq) -> list[str]:
-        N, D = seq.shape
-        out = []
-        for i in range(N):
-            txt = ''
-            for j in range(D):
-                ix = seq[i,j]
-                if ix > 0 :
-                    if j >= 1:
-                        txt = txt + ' '
-                    txt = txt + ix_to_word[str(ix)]
-                else:
-                    break
-            out.append(txt)
-        return out
+        return 'cuda' if torch.cuda.is_available() else 'cpu'    
     
     def load_pickle(file_path: str):    
         if (not file_path):
@@ -69,3 +54,10 @@ class Utils:
                 return six.moves.cPickle.load(f, encoding='latin1')                
         except Exception as e:
             print(f"An error occurred while loading the data: {e}")
+
+    def get_model_from_hub(hub: TorchHub):
+        if (not hub):
+            print("hub is None, (invalid input)")
+            return
+        
+        return hub.get_model()
