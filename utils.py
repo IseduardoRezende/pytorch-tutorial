@@ -61,3 +61,7 @@ class Utils:
             return
         
         return hub.get_model()
+    
+    def get_shape(tensor: torch.Tensor) -> torch.Size:
+        print(tensor.shape)
+        return tensor.shape

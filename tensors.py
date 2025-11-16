@@ -1,5 +1,6 @@
 import torch
 import random
+from utils import Utils
 
 def tensor_ones():
     a = torch.ones(3)
@@ -28,20 +29,18 @@ def tensor_2d_points():
    
     points = torch.tensor([[4.0, 1.0], [5.0, 3.0], [2.0, 1.0]])
     print(points)
-    get_shape(points)
+    Utils.get_shape(points)
 
     print(points[0, 1])
     print(points[0])
 
-def get_shape(tensor: torch.Tensor):
-    print(tensor.shape)
-
 def indexing_notation_tensor():
     tensor = torch.tensor([[4.0, 1.0], [5.0, 3.0], [2.0, 1.0]])
-    print(tensor[1:])
-    print(tensor[1:, :])
-    print(tensor[1:, 0])
-    print(tensor[None])
+    print(tensor) # All items - 3x2 (rows, columns)
+    print(tensor[1:]) # From row 1 to end
+    print(tensor[1:, :]) # From row 1 to end
+    print(tensor[1:, 0]) # From row 1 to end, column 0 (Only the first elements of each line)
+    print(tensor[None]) # Add dimension - 1x3x2 (layer, rows columns)
 
 def indexing_notation_list():
     a = list(range(6))    
